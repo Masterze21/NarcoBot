@@ -6,7 +6,7 @@ const client = new Discord.Client();
 
 var prefix = "m!";
 
-client.login("NDQwMzM3Nzk4OTkwNTI4NTE0.Dfh1MQ.zkPbtHo5wlpXqhFcjIXENUFpVw8");
+client.login(process.env.TOKEN);
 
 client.on("ready", () => {
     console.log("Bot on")
