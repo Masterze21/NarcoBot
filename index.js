@@ -1,12 +1,17 @@
 const Discord = require('discord.js')
-
 const rn = require('random-number');
-
+const yt = require('ytdl-core');
+const fb = require('ffmpeg-binaries')
+const os = require('opusscript')
+const msmute = require('ms');
 const client = new Discord.Client();
+const bot = new Discord.Client();
+
+var dispatcher;
 
 var prefix = "m!";
 
-client.login(process.env.TOKEN);
+client.login("TOKEN");
 
 client.on("ready", () => {
     console.log("Bot on")
@@ -16,30 +21,31 @@ client.user.setGame(`Serveurs : ${nombre}  | m!help`);
 
 client.on('message', message => {
 
-    if(message.content.startsWith(prefix + "ct")){
+    if(message.content.startsWith(prefix + "ct")) {
+        message.delete().catch();
         message.reply("Pour me contacter : masterzey06@gmail.com ou Masterze 21#0001 ");
         console.log ('bot ct');
     }
 
     if(message.content === prefix + "help"){
+        message.delete().catch();
         var help_embed = new Discord.RichEmbed()
-        .setColor("#FF6600")
+        
+        .setColor(" #FFFFFF")
         .setTitle(":arrow_down_small: Voici les commandes disponible :arrow_down_small: ")
-        .setDescription("Je suis un bot de Modérations :tools: et Utilitaires :gear: pour l'intant)")
-        .addField("m!ct", "Pour me contacter:e_mail: ")
-        .addField("m!help", "Affiche les commandes:hammer_pick: .")
-        .addField("m!profil", "Affiche tes statistiques Discord:chart_with_upwards_trend: !")
-        .addField("m!info", "Affiche les info Serveur:satellite: ")
-        .addField("m!kick", "Kick la personne mentionné:door:")
-        .addField("m!ban", "Ban la personne mentionné:hammer:")
-        .addField("m!clear", "supprimer les message (:one:-:one::zero::zero:)")
-        .addField("m!ping", "Temp de latence avec le serveur:ping_pong:")
+        .setDescription("Je suis un bot de Modérations :tools:, Amusants :tada:, Utilitaires :gear:! Passe un bon moment ! :smiley:!")
+        .addField(":tools: Modération:", " ``kick`` ``ban`` ``clear``")
+        .addField(":gear: Utilitaire :", " ``profil`` ``info`` ``ping``")
+        .addField(":tada: Fun :", " ``8ball`` ``say``")
+        .addField(":smile: Important :", " ``support`` ``bot`` ``credit``")
         .setFooter("Par Masterze 21#0001")
         message.channel.sendMessage(help_embed);
         console.log ("commandes aide")
     }
 
+
     if(message.content === prefix + "info") {
+        message.delete().catch();
         var info_embed = new Discord.RichEmbed()
 
         .setTitle("Voici les informations sur moi et le serveur !")
@@ -53,7 +59,7 @@ client.on('message', message => {
         .addField(":open_file_folder:Le nombre de rôle :", message.guild.roles.size, true)
         .addField(":neutral_face:Nombre d'émojie", message.guild.emojis.size, true )
         .setFooter("Par Masterze 21#0001")
-        .setColor("#FF6600")
+        .setColor("#FFFFF")
         message.channel.send(info_embed).catch();
         console.log("info commands");
     }
@@ -128,7 +134,7 @@ client.on('message', message => {
         
         var stats_embed = new Discord.RichEmbed()
         
-        .setColor("#FCDC12")
+        .setColor("#FFFFF")
         .setTitle(`Compte : ${message.author.username}`)
         .addField("Pseudo", ` ${message.author.username} `)
         .addField(":hash:", `#${message.author.discriminator}`)
@@ -141,9 +147,78 @@ client.on('message', message => {
         break;
     }
     if(message.content.startsWith(prefix + "ping"))  {
+        message.delete().catch();
         let ping = Math.round(client.ping);
         console.log ('ping')
 
-        message.channel.send(':ping_pong:Pong : '+ ` ${ping } ` +  'ms`');
+        message.channel.send(':ping_pong:Pong:`' + `${ping}` + ' ms`');
         }
+        
+        if(message.content.startsWith(prefix + "8ball"))  { 
+               message.delete().catch();
+        if(!args[2])return message.reply("s'il vous plaît poser une question complète")
+        let replies = ["Oui", "Non", "Je ne sais pas", "demandez plus tard :D"]
+
+        let result = Math.floor((Math.random() * replies.length))
+        let question = args.slice(1).join(" ");
+
+        let ball_embed = new Discord.RichEmbed()
+        .setTitle("8ball :8ball:")
+        .setColor("#00000" )
+        .addField("Question", question)
+        .addField("Réponse", replies[result])
+        message.channel.send(ball_embed)
+        console.log ('8ball')
+    };
+    
+        if(message.content.startsWith(prefix + "say"))  {
+   sayMessage = message.content.substring(prefix.length + 4);
+    message.delete().catch();
+    message.channel.send(sayMessage);
+    }
+    if(message.content.startsWith(prefix + "support")) {
+        message.delete().catch();
+
+            var support_embed = new Discord.RichEmbed()
+
+
+            .setColor("#FFFFFF")
+            .setTitle(":link: Support")
+            .setDescription("Venez pour que on vous aide a développer aussi :wink: ")
+            .setURL("https://discord.gg/KZt8AS5")
+            .setFooter('©NarcoBot', `https://cdn.discordapp.com/attachments/455412321880375296/455734120719581185/dd8de6ee6dfa67495dd05f64b26f978cdb8e0029_full.jpg`)
+            message.channel.send(support_embed)
+            console.log ('bot support');
+    }
+    if(message.content.startsWith(prefix + "bot")) {
+        message.delete().catch();
+
+            var nombre = client.guilds.size
+            var bot_embed = new Discord.RichEmbed()
+
+        .setColor("#FFFFFF")
+        .setTitle('Clique ici si tu me veux')
+        .setURL("https://discordapp.com/oauth2/authorize?client_id=440337798990528514&scope=bot&permissions=2146958591")
+        .addField(":hash:| Tag ", `#${client.user.discriminator}`, true)
+        .addField(":id:| ID", `${client.user.id}`, true)
+        .addField(":crown: | Owner", " ``Masterze 21#0001`` ", true)
+        .addField(":file_cabinet: Serveurs :", `${nombre}`, true)
+        .setFooter('©NarcoBot', `https://cdn.discordapp.com/attachments/455412321880375296/455734120719581185/dd8de6ee6dfa67495dd05f64b26f978cdb8e0029_full.jpg`)
+        .setThumbnail(client.user.avatarURL)
+        message.channel.sendMessage(bot_embed);
+        console.log ('Bot');
+    }
+    if(message.content.startsWith(prefix + "credit")) {
+        message.delete().catch();
+
+            var credit_embed = new Discord.RichEmbed()
+
+            .setColor("#00000")
+            .setTitle("LES PERSONNE QUI MON AIDER :")
+            .setDescription("Merci à vous tous :heart: ")
+            .setImage("https://cdn.discordapp.com/attachments/455479163323678730/455836838863831061/Sans_titre-1.png")
+            .setFooter('©NarcoBot', `https://cdn.discordapp.com/attachments/455412321880375296/455734120719581185/dd8de6ee6dfa67495dd05f64b26f978cdb8e0029_full.jpg`)
+            message.channel.sendMessage(credit_embed);
+        console.log ('Thx');
+    } 
 });
