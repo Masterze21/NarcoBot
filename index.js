@@ -11,7 +11,7 @@ var dispatcher;
 
 var prefix = "m!";
 
-client.login("TOKEN");
+client.login(process.token");
 
 client.on("ready", () => {
     console.log("Bot on")
